@@ -1,0 +1,58 @@
+class Square:
+    def __init__(self, north = 0, east = 0, south = 0, west = 0): #0 means there's no wall #1 means there's a wall
+        self.north = north
+        self.east = east
+        self.south = south
+        self.west = west
+
+class Maze:
+    def __init__(self, file):
+        self.maze = two_dimension_array
+        construct_maze(file)
+        
+    def construct_maze(file):
+        lines_list = file.readlines()
+        lines_num = len(lines_list)
+        
+        for i in range(lines_num): #turn it into indexes 
+            line = lines_list[i]
+            for j in range(len(line.split())
+                north = 0
+                east = 0
+                south = 0
+                west = 0
+                if ...
+                    north = 1
+                ...
+                square = Square(north, east, south, west)
+                self.maze[i, j] = square
+
+class State:
+    def __init__(self, file): #construct the initial state 
+        self.mouse_loc = (0, 1) # (row, col)
+        self.cheese_loc = [(1, 2), (2, 4)] #?
+        self.maze = Maze(file)
+        
+    def update_mouse_loc(self, new_mouse_loc):
+        self.mouse_loc = new_mouse_loc
+        
+
+def transition(state, action):
+    if action == 'North' and state.maze[mouse_loc][4] == 0: 
+    #no wall at the south side of the square above
+        state.mouse_loc[0] += 1
+        
+    ...
+        
+    try:
+        state.cheese_loc.remove(mouse_loc)
+    except Error:
+        pass 
+        
+    if cheese_loc == []: #goal test: check if there's no cheese left #make it a separate function 
+        return 
+
+        
+
+        
+    
