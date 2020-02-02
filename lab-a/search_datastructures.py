@@ -6,6 +6,9 @@ class Node:
 		self.path_cost = path_cost
 		self.priority = priority
 
+	def __eq__(self, other):
+		return self.state == other.get_state()
+
 	def __lt__(self, other):
 		return self.priority < other.get_priority()
 
@@ -67,13 +70,40 @@ class InformedSearchTree(SearchTree): #the frontier is a Priority Queue
 		super().__init__()
 
 	def pop_frontier_min(self):
-		min_priority_node = min(self.frontier)
+		min_priority_node = min(self.frontier) #this takes O(n), is there a more efficient way?
 		self.frontier.remove(min_priority_node)
 		return min_priority_node
 
-if __name__ == '__main__':
-	from state_representation import DynamicState 
-	
+
+from state_representation import DynamicState
+
+def get_visited_squares(goal_node):
+	visited_squares = [goal_node.get_state().get_mouse_loc()]
+	parent_node = goal_node.get_parent()
+
+	while parent_node is not None: #bug?
+		visited_squares.append(parent_node.get_state().get_mouse_loc())
+		parent_node = parent_node.get_parent()
+		
+	return visited_squares
+
+def print_solution(maze, goal_node):
+	visited_squares = get_visited_squares(goal_node)
+
+	for i in range(len(maze)):
+		for j in range(len(maze[i])):
+			if maze[i][j] == 1:
+				print("%", end = '')
+
+			else:
+				if [i, j] in visited_squares:
+					print('#', end = '')
+				else:
+					print(' ', end = '')
+		print()
+
+
+if __name__ == '__main__': 
 	s1 = DynamicState([1,1], [[5,5], [3,7]])
 	s2 = DynamicState([1,2], [[5,5], [3,7]])
 	s3 = DynamicState([2,1], [[5,5], [3,7]])
