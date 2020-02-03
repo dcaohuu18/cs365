@@ -3,14 +3,13 @@ from search_datastructures import Node, BfSearchTree, DfSearchTree, print_soluti
 
 
 def uninformed_expand(parent_node, search_tree, maze):
-	search_tree.add_to_expanded_nodes(parent_node)
-
 	for action in ['N', 'E', 'S', 'W']:
 		child_state = transition_model(maze, parent_node.get_state(), action)
 		child_node = Node(child_state, parent_node, action, parent_node.get_path_cost() + 1) 
-		#this only works for uninformed search
 
-		if child_node not in search_tree.get_expanded_nodes():
+		try:
+			search_tree.get_expanded_nodes()[child_node]
+		except KeyError: #not in expanded_nodes
 			search_tree.add_to_frontier(child_node)
 
 
@@ -25,11 +24,12 @@ def single_dfs(inputFile):
 
 	while df_tree.get_frontier() != []:
 	 	node_to_exp = df_tree.pop_frontier() #node to expand
-	 	
+        
 	 	if node_to_exp.get_state().goal_test():
 	 		goal_node = node_to_exp
 	 		break 
 
+	 	df_tree.add_to_expanded_nodes(node_to_exp)
 	 	uninformed_expand(node_to_exp, df_tree, maze)
  	
 	try:
@@ -41,6 +41,8 @@ def single_dfs(inputFile):
 	print("The number of nodes expanded is: ", len(df_tree.get_expanded_nodes()))
 
 
+from collections import deque    
+    
 def single_bfs(inputFile):
 	full_state = FullState(inputFile)
 	maze = full_state.get_maze()
@@ -50,14 +52,16 @@ def single_bfs(inputFile):
 	bf_tree = BfSearchTree()
 	bf_tree.add_to_frontier(root_node)
 
-	while bf_tree.get_frontier() != []:
+	while bf_tree.get_frontier() != deque(): 
 	 	node_to_exp = bf_tree.deque_frontier() #node to expand
-	 	
+        
 	 	if node_to_exp.get_state().goal_test():
 	 		goal_node = node_to_exp
 	 		break 
 
-	 	uninformed_expand(node_to_exp, bf_tree, maze)
+	 	bf_tree.add_to_expanded_nodes(node_to_exp)
+	 	uninformed_expand(node_to_exp, bf_tree, maze) #there may be a bug around here
+	 	#print("The number of nodes expanded is: ", len(bf_tree.get_expanded_nodes()))
  	
 	try:
 		print_solution(maze, goal_node)
@@ -70,4 +74,4 @@ def single_bfs(inputFile):
 
 if __name__ == '__main__':
 	single_dfs('1prize-medium.txt')
-	single_bfs('1prize-tiny.txt')
+	single_bfs('1prize-medium.txt')
