@@ -1,3 +1,5 @@
+from state_representation import DynamicState
+
 class Node:
 	def __init__(self, state, parent = None, action = None, path_cost = 0, priority = 0):
 		self.state = state
@@ -8,6 +10,9 @@ class Node:
 
 	def __eq__(self, other):
 		return self.state == other.get_state()
+    
+	def __hash__(self):
+		return hash(self.state)
 
 	def __lt__(self, other):
 		return self.priority < other.get_priority()
@@ -33,7 +38,7 @@ class Node:
 
 class SearchTree:
 	def __init__(self):
-		self.expanded_nodes = []
+		self.expanded_nodes = {} #use dict for better performance 
 		self.frontier = []
 
 	def get_expanded_nodes(self):
@@ -46,17 +51,20 @@ class SearchTree:
 		self.frontier.append(node)
 
 	def add_to_expanded_nodes(self, node):
-		self.expanded_nodes.append(node)
+		self.expanded_nodes[node] = 1
 
 	def print_frontier(self): #for debugging only!
 		print([str(n) for n in self.frontier])
+        
+from collections import deque
 
 class BfSearchTree(SearchTree): #the frontier is a FIFO Queue 
 	def __init__(self):
 		super().__init__()
+		self.frontier = deque(self.frontier) #use deque object for better pop() performance 
 
 	def deque_frontier(self):
-		return self.frontier.pop(0)
+		return self.frontier.popleft()
 
 class DfSearchTree(SearchTree): #the frontier is a Stack
 	def __init__(self):
@@ -65,6 +73,7 @@ class DfSearchTree(SearchTree): #the frontier is a Stack
 	def pop_frontier(self):
 		return self.frontier.pop()
 
+'''
 class InformedSearchTree(SearchTree): #the frontier is a Priority Queue 
 	def __init__(self):
 		super().__init__()
@@ -73,9 +82,20 @@ class InformedSearchTree(SearchTree): #the frontier is a Priority Queue
 		min_priority_node = min(self.frontier) #this takes O(n), is there a more efficient way?
 		self.frontier.remove(min_priority_node)
 		return min_priority_node
+'''
 
+from heapq import heappush, heappop, heapify
 
-from state_representation import DynamicState
+class InformedSearchTree(SearchTree): #the frontier is a Min Heap 
+	def __init__(self):
+		super().__init__()
+
+	def add_to_frontier(self, node): #method overriding 
+		heappush(self.frontier, node)
+
+	def pop_frontier_min(self):
+		return heappop(self.frontier)
+    
 
 def get_visited_squares(goal_node):
 	visited_squares = [goal_node.get_state().get_mouse_loc()]
