@@ -1,19 +1,19 @@
 from state_representation import FullState, DynamicState, transition_model
-from search_datastructures import Node, InformedSearchTree, expand_node, print_solution
+from search_datastructures import Node, InformedSearchTree, print_solution
 
 def single_heuristic(current_state, prize_loc):
 	current_loc = current_state.get_mouse_loc()
 	return abs(prize_loc[1] - current_loc[1]) + abs(prize_loc[0] - current_loc[0]) #manhattan distance 
 
 def greedy_expand(parent_node, search_tree, maze, prize_loc):
-	search_tree.add_to_expanded_nodes(parent_node)
-
 	for action in ['N', 'E', 'S', 'W']:
 		child_state = transition_model(maze, parent_node.get_state(), action)
 		child_priority = single_heuristic(child_state, prize_loc)
 		child_node = Node(child_state, parent_node, action, parent_node.get_path_cost() + 1, child_priority) 
 
-		if child_node not in search_tree.get_expanded_nodes():
+		try:
+			search_tree.get_expanded_nodes()[child_node]
+		except KeyError: #not in expanded_nodes
 			search_tree.add_to_frontier(child_node)
 
 def single_gbfs(inputFile):
@@ -33,6 +33,7 @@ def single_gbfs(inputFile):
 	 		goal_node = node_to_exp
 	 		break 
 
+	 	gbf_tree.add_to_expanded_nodes(node_to_exp)
 	 	greedy_expand(node_to_exp, gbf_tree, maze, prize_loc)
  	
 	try:
@@ -44,4 +45,4 @@ def single_gbfs(inputFile):
 	print("The number of nodes expanded is: ", len(gbf_tree.get_expanded_nodes()))
 
 if __name__ == '__main__':
-	single_gbfs('1prize-open.txt')
+	single_gbfs('1prize-large.txt')
