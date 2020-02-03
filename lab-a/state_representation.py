@@ -62,6 +62,12 @@ class DynamicState:
     def __init__(self, mouse_loc, cheese_loc):
         self.mouse_loc = mouse_loc
         self.cheese_loc = cheese_loc
+        
+    def __hash__(self): #is this a good hash method?
+        coordinates_list = [e for e in self.mouse_loc]
+        for l in self.cheese_loc:
+            coordinates_list += [e for e in l]
+        return hash(frozenset(coordinates_list))
     
     def get_mouse_loc(self):
         return self.mouse_loc
