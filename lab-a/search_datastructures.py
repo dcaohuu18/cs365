@@ -35,10 +35,11 @@ class Node:
 	def get_priority(self):
 		return self.priority    
 
+##################################################
 
 class SearchTree:
 	def __init__(self):
-		self.expanded_nodes = {} #use dict for better performance 
+		self.expanded_nodes = set() #use set for better lookup performance 
 		self.frontier = []
 
 	def get_expanded_nodes(self):
@@ -51,7 +52,7 @@ class SearchTree:
 		self.frontier.append(node)
 
 	def add_to_expanded_nodes(self, node):
-		self.expanded_nodes[node] = 1
+		self.expanded_nodes.add(node)
 
 	def print_frontier(self): #for debugging only!
 		print([str(n) for n in self.frontier])
@@ -73,17 +74,6 @@ class DfSearchTree(SearchTree): #the frontier is a Stack
 	def pop_frontier(self):
 		return self.frontier.pop()
 
-'''
-class InformedSearchTree(SearchTree): #the frontier is a Priority Queue 
-	def __init__(self):
-		super().__init__()
-
-	def pop_frontier_min(self):
-		min_priority_node = min(self.frontier) #this takes O(n), is there a more efficient way?
-		self.frontier.remove(min_priority_node)
-		return min_priority_node
-'''
-
 from heapq import heappush, heappop, heapify
 
 class InformedSearchTree(SearchTree): #the frontier is a Min Heap 
@@ -96,6 +86,7 @@ class InformedSearchTree(SearchTree): #the frontier is a Min Heap
 	def pop_frontier_min(self):
 		return heappop(self.frontier)
     
+#########################################################
 
 def get_visited_squares(goal_node):
 	visited_squares = [goal_node.get_state().get_mouse_loc()]
@@ -142,7 +133,3 @@ if __name__ == '__main__':
 	df_tree.print_frontier()
 
 	#https://ai.stackexchange.com/questions/6426/what-is-the-difference-between-tree-search-and-graph-search
-
-
-
-		
