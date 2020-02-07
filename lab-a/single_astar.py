@@ -10,9 +10,7 @@ def astar_expand(parent_node, search_tree, maze, prize_loc):
 		
 		child_node = Node(child_state, parent_node, action, child_path_cost, child_priority) 
 
-		try:
-			search_tree.get_expanded_nodes()[child_node]
-		except KeyError: #not in expanded_nodes
+		if child_node not in search_tree.get_expanded_nodes():
 			search_tree.add_to_frontier(child_node)
 
 def single_astar(inputFile):
@@ -44,4 +42,4 @@ def single_astar(inputFile):
 	print("The number of nodes expanded is: ", len(astar_tree.get_expanded_nodes()))
 
 if __name__ == '__main__':
-	single_astar('1prize-large.txt')
+	single_astar('1prize-open.txt')
