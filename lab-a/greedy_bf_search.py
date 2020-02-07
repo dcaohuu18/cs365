@@ -11,9 +11,7 @@ def greedy_expand(parent_node, search_tree, maze, prize_loc):
 		child_priority = single_heuristic(child_state, prize_loc)
 		child_node = Node(child_state, parent_node, action, parent_node.get_path_cost() + 1, child_priority) 
 
-		try:
-			search_tree.get_expanded_nodes()[child_node]
-		except KeyError: #not in expanded_nodes
+		if child_node not in search_tree.get_expanded_nodes():
 			search_tree.add_to_frontier(child_node)
 
 def single_gbfs(inputFile):
