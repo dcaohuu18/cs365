@@ -42,6 +42,19 @@ def transition_model(state, action):
         
     if cheese_loc == []: #goal test: check if there's no cheese left #make it a separate function 
         return 
+                           
+def multi_heuristic(node, state): #mahattan distance to the farthest prize 
+    farthest = single_heuristic(node, state.get_cheese_loc[0])
+    for cheese in state.get_cheese_loc:
+        dis_to_cheese = single_heuristic(node, cheese)
+        if dis_to_cheese > farthest:
+            farthest = dis_to_cheese
+    return farthest
+            
+#possible deepcopy issue 
+#use pycharm for debugging 
+            
+        
 
         
 
