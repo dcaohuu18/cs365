@@ -48,13 +48,13 @@ class FullState:
             row = self.maze[i] 
             for j in range(len(row)):
                 if row[j] == 1:
-                    print('%', end = '')
+                    print('%', end = "")
                 elif [i, j] == self.mouse_loc:
-                    print('P', end = '')
+                    print('P', end = "")
                 elif [i, j] in self.cheese_loc:
-                    print('.', end = '')
+                    print('.', end = "")
                 else:
-                    print(' ', end = '')
+                    print(' ', end = "")
             print()
             
 
@@ -85,10 +85,7 @@ class DynamicState:
         return (self.mouse_loc == other.mouse_loc) and (self.cheese_loc == other.cheese_loc)
 
     def goal_test(self):
-        if self.cheese_loc == []: #check if there's no cheese left 
-            return True
-        else:    
-            return False
+        return self.cheese_loc == []: #check if there's no cheese left
 
 
 def transition_model(maze, old_state, action):
