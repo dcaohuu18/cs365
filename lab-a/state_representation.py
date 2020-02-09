@@ -85,7 +85,7 @@ class DynamicState:
         return (self.mouse_loc == other.mouse_loc) and (self.cheese_loc == other.cheese_loc)
 
     def goal_test(self):
-        return self.cheese_loc == []: #check if there's no cheese left
+        return self.cheese_loc == [] #check if there's no cheese left
 
 
 def transition_model(maze, old_state, action):
