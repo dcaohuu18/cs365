@@ -45,14 +45,15 @@ def multi_heuristic(current_state): #return the mahattan distance to the nearest
 def multi_astar_expand(parent_node, search_tree, maze):
 	for action in ['N', 'E', 'S', 'W']:
 		child_state = transition_model(maze, parent_node.get_state(), action)
+
+		if child_state in search_tree.get_expanded_states():
+			continue 
 		
 		child_path_cost = parent_node.get_path_cost() + 1
 		child_priority = child_path_cost + multi_heuristic(child_state) 
-		
-		child_node = Node(child_state, parent_node, action, child_path_cost, child_priority) 
+		child_node = Node(child_state, parent_node, action, child_path_cost, child_priority)
 
-		if child_node not in search_tree.get_expanded_nodes(): 
-			search_tree.add_to_frontier(child_node)
+		search_tree.add_to_frontier(child_node)
 
 
 def multi_astar(inputFile):
@@ -72,12 +73,12 @@ def multi_astar(inputFile):
 	 		break
 
 	 	# because there are duplicates in the frontier, 
-	 	# we need to check if node_to_exp is already in expanded_nodes to avoid expanding the same node twice:
+	 	# we need to check if node_to_exp is already in expanded_states to avoid expanding the same node twice:
 
-	 	if node_to_exp in astar_tree.get_expanded_nodes():
+	 	if node_to_exp.get_state() in astar_tree.get_expanded_states():
 	 		continue
 
-	 	astar_tree.add_to_expanded_nodes(node_to_exp)
+	 	astar_tree.add_to_expanded_states(node_to_exp.get_state())
 	 	multi_astar_expand(node_to_exp, astar_tree, maze)
 
 	try:
@@ -86,12 +87,12 @@ def multi_astar(inputFile):
 	except NameError: #goal_node is not defined
 		print('Goal not reached')
 
-	print("The number of nodes expanded is: ", len(astar_tree.get_expanded_nodes()))
+	print("The number of nodes expanded is: ", len(astar_tree.get_expanded_states()))
 
 
 if __name__ == '__main__':
 	multi_astar('multiprize-micro.txt') 
 	multi_astar('multiprize-tiny.txt')
+	#multi_astar('multiprize-small.txt')
 
-#suggestion: 
-	#change expanded_nodes to expanded_states?
+#suggestion:
