@@ -39,11 +39,11 @@ class Node:
 
 class SearchTree:
 	def __init__(self):
-		self.expanded_nodes = set() #use set for better lookup performance 
+		self.expanded_states = set() #use set for better lookup performance 
 		self.frontier = []
 
-	def get_expanded_nodes(self):
-		return self.expanded_nodes
+	def get_expanded_states(self):
+		return self.expanded_states
 
 	def get_frontier(self):
 		return self.frontier 
@@ -51,8 +51,8 @@ class SearchTree:
 	def add_to_frontier(self, node):
 		self.frontier.append(node)
 
-	def add_to_expanded_nodes(self, node):
-		self.expanded_nodes.add(node)
+	def add_to_expanded_states(self, state):
+		self.expanded_states.add(state)
 
 	def print_frontier(self): #for debugging only!
 		print([str(n) for n in self.frontier])
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 	n3 = Node(s3, n1, 'S', 1, 1)
 
 	df_tree = DfSearchTree()
-	df_tree.add_to_expanded_nodes(n1)
+	df_tree.add_to_expanded_states(n1)
 	df_tree.add_to_frontier(n2)
 	df_tree.add_to_frontier(n3)
 	df_tree.print_frontier()
