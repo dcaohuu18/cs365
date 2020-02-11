@@ -5,13 +5,15 @@ from greedy_bf_search import single_heuristic
 def astar_expand(parent_node, search_tree, maze, prize_loc):
 	for action in ['N', 'E', 'S', 'W']:
 		child_state = transition_model(maze, parent_node.get_state(), action)
+
+		if child_state in search_tree.get_expanded_states():
+			continue
+
 		child_path_cost = parent_node.get_path_cost() + 1
 		child_priority = child_path_cost + single_heuristic(child_state, prize_loc) 
-		
 		child_node = Node(child_state, parent_node, action, child_path_cost, child_priority) 
 
-		if child_node not in search_tree.get_expanded_nodes():
-			search_tree.add_to_frontier(child_node)
+		search_tree.add_to_frontier(child_node)
 
 def single_astar(inputFile):
 	full_state = FullState(inputFile)
@@ -25,12 +27,15 @@ def single_astar(inputFile):
 
 	while astar_tree.get_frontier() != []:
 	 	node_to_exp = astar_tree.pop_frontier_min() #node to expand
+
+	 	if node_to_exp.get_state() in astar_tree.get_expanded_states():
+	 		continue 
 	 	
 	 	if node_to_exp.get_state().goal_test():
 	 		goal_node = node_to_exp
 	 		break
 
-	 	astar_tree.add_to_expanded_nodes(node_to_exp)
+	 	astar_tree.add_to_expanded_states(node_to_exp.get_state())
 	 	astar_expand(node_to_exp, astar_tree, maze, prize_loc)
  	
 	try:
@@ -39,7 +44,7 @@ def single_astar(inputFile):
 	except NameError: #goal_node is not defined
 		print('Goal not reached')
 
-	print("The number of nodes expanded is: ", len(astar_tree.get_expanded_nodes()))
+	print("The number of nodes expanded is: ", len(astar_tree.get_expanded_states()))
 
 if __name__ == '__main__':
 	single_astar('1prize-open.txt')
