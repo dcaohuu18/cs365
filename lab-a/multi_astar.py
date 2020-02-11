@@ -35,18 +35,16 @@ def print_multiprize_sol(maze, goal_node):
 		print()
 
 
-def multi_heuristic(current_state): #return the mahattan distance to the farthest prize
+def multi_heuristic(current_state): #return the mahattan distance to the nearest/farthest prize
 	try:
 	    return max([single_heuristic(current_state, c) for c in current_state.get_cheese_loc()])
 	except ValueError: #cheese_loc is empty, i.e. goal reached! 
 		return 0
 
 
-def multi_astar_expand(parent_node, search_tree, states_frontier, maze):
+def multi_astar_expand(parent_node, search_tree, maze):
 	for action in ['N', 'E', 'S', 'W']:
 		child_state = transition_model(maze, parent_node.get_state(), action)
-		if child_state in states_frontier:
-			continue
 		
 		child_path_cost = parent_node.get_path_cost() + 1
 		child_priority = child_path_cost + multi_heuristic(child_state) 
@@ -55,7 +53,6 @@ def multi_astar_expand(parent_node, search_tree, states_frontier, maze):
 
 		if child_node not in search_tree.get_expanded_nodes(): 
 			search_tree.add_to_frontier(child_node)
-			states_frontier.add(child_state)
 
 
 def multi_astar(inputFile):
@@ -67,18 +64,21 @@ def multi_astar(inputFile):
 	astar_tree = InformedSearchTree()
 	astar_tree.add_to_frontier(root_node)
 
-	states_frontier = {root_node.get_state()}
-
 	while astar_tree.get_frontier() != []:
 	 	node_to_exp = astar_tree.pop_frontier_min() #node to expand
-	 	states_frontier.remove(node_to_exp.get_state())
-	 	
+
 	 	if node_to_exp.get_state().goal_test():
 	 		goal_node = node_to_exp
 	 		break
 
+	 	# because there are duplicates in the frontier, 
+	 	# we need to check if node_to_exp is already in expanded_nodes to avoid expanding the same node twice:
+
+	 	if node_to_exp in astar_tree.get_expanded_nodes():
+	 		continue
+
 	 	astar_tree.add_to_expanded_nodes(node_to_exp)
-	 	multi_astar_expand(node_to_exp, astar_tree, states_frontier, maze)
+	 	multi_astar_expand(node_to_exp, astar_tree, maze)
 
 	try:
 		print_multiprize_sol(maze, goal_node)
@@ -90,8 +90,8 @@ def multi_astar(inputFile):
 
 
 if __name__ == '__main__':
+	multi_astar('multiprize-micro.txt') 
 	multi_astar('multiprize-tiny.txt')
 
 #suggestion: 
 	#change expanded_nodes to expanded_states?
-	#read about IDA*
