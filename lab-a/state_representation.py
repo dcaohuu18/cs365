@@ -4,7 +4,7 @@ class FullState:
     def __init__(self, inputFile):
         self.maze = []
         self.mouse_loc = [-1, -1]
-        self.cheese_loc = []
+        self.cheese_loc = [] 
         
         #read the file and construct the state:
         with open(inputFile, 'r') as inputFile:
@@ -93,7 +93,7 @@ def transition_model(maze, old_state, action):
     old_mouse_loc = old_state.get_mouse_loc()
 
     #update mouse_loc:
-    if action == 'N' and maze[old_mouse_loc[0] - 1][old_mouse_loc[1]] == 0: 
+    if action == 'N' and maze[old_mouse_loc[0] - 1][old_mouse_loc[1]] == 0:
         new_state.mouse_loc[0] -= 1 #move up
 
     elif action == 'E' and maze[old_mouse_loc[0]][old_mouse_loc[1] + 1] == 0: 
