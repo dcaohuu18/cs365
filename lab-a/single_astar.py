@@ -1,6 +1,5 @@
 from state_representation import FullState, DynamicState, transition_model
-from search_datastructures import Node, InformedSearchTree, print_solution
-from greedy_bf_search import single_heuristic
+from search_datastructures import Node, InformedSearchTree, print_sin_solution, single_heuristic
 
 def astar_expand(parent_node, search_tree, maze, prize_loc):
 	for action in ['N', 'E', 'S', 'W']:
@@ -31,6 +30,8 @@ def single_astar(inputFile):
 	 	if node_to_exp.get_state() in astar_tree.get_expanded_states():
 	 		continue 
 	 	
+	 	# because there are duplicates in the frontier, 
+	 	# we need to check if node_to_exp is already in expanded_states to avoid expanding the same node twice:
 	 	if node_to_exp.get_state().goal_test():
 	 		goal_node = node_to_exp
 	 		break
@@ -39,7 +40,7 @@ def single_astar(inputFile):
 	 	astar_expand(node_to_exp, astar_tree, maze, prize_loc)
  	
 	try:
-		print_solution(maze, goal_node)
+		print_sin_solution(maze, goal_node)
 		print("The path cost is: ", goal_node.get_path_cost())
 	except NameError: #goal_node is not defined
 		print('Goal not reached')
