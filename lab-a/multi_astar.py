@@ -1,6 +1,5 @@
 from state_representation import FullState, DynamicState, transition_model
-from search_datastructures import Node, InformedSearchTree
-from greedy_bf_search import single_heuristic
+from search_datastructures import Node, InformedSearchTree, single_heuristic
 from collections import deque
 
 
@@ -10,7 +9,7 @@ def get_visited_prizes(goal_node):
 	parent_node = goal_node.get_parent()
 
 	while parent_node is not None:
-		if child_node.get_state().get_cheese_loc() != parent_node.get_state().get_cheese_loc():
+		if child_node.get_state().get_cheese_loc() != parent_node.get_state().get_cheese_loc(): #a prize was collected
 			visited_prizes.appendleft(child_node.get_state().get_mouse_loc())
 			
 		child_node = parent_node
@@ -35,9 +34,10 @@ def print_multiprize_sol(maze, goal_node):
 		print()
 
 
-def multi_heuristic(current_state): #return the mahattan distance to the nearest/farthest prize
+def multi_heuristic(current_state): #return the manhattan distance to the furthest prize
 	try:
-	    return max([single_heuristic(current_state, c) for c in current_state.get_cheese_loc()])
+		cheese_loc = current_state.get_cheese_loc()
+		return max([single_heuristic(current_state, c) for c in cheese_loc]) # + len(cheese_loc) 
 	except ValueError: #cheese_loc is empty, i.e. goal reached! 
 		return 0
 
@@ -74,7 +74,6 @@ def multi_astar(inputFile):
 
 	 	# because there are duplicates in the frontier, 
 	 	# we need to check if node_to_exp is already in expanded_states to avoid expanding the same node twice:
-
 	 	if node_to_exp.get_state() in astar_tree.get_expanded_states():
 	 		continue
 
@@ -91,8 +90,6 @@ def multi_astar(inputFile):
 
 
 if __name__ == '__main__':
-	multi_astar('multiprize-micro.txt') 
+	multi_astar('multiprize-micro1.txt') 
 	multi_astar('multiprize-tiny.txt')
 	#multi_astar('multiprize-small.txt')
-
-#suggestion:
