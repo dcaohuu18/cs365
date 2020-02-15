@@ -1,5 +1,5 @@
 from state_representation import FullState, DynamicState, transition_model
-from search_datastructures import Node, BfSearchTree, DfSearchTree, print_solution
+from search_datastructures import Node, BfSearchTree, DfSearchTree, print_sin_solution
 
 
 def df_expand(parent_node, search_tree, maze):
@@ -23,7 +23,7 @@ def single_dfs(inputFile):
 	while df_tree.get_frontier() != []:
 	 	node_to_exp = df_tree.pop_frontier() #node to expand
         
-	 	if node_to_exp.get_state().goal_test():
+	 	if node_to_exp.get_state().goal_test(): #goal achieved
 	 		goal_node = node_to_exp
 	 		break 
 
@@ -31,7 +31,7 @@ def single_dfs(inputFile):
 	 	df_expand(node_to_exp, df_tree, maze)
  	
 	try:
-		print_solution(maze, goal_node)
+		print_sin_solution(maze, goal_node)
 		print("The path cost is: ", goal_node.get_path_cost())
 	except NameError: #goal_node is not defined
 		print('Goal not reached')
@@ -66,10 +66,12 @@ def single_bfs(inputFile):
 	while bf_tree.get_frontier() != deque(): 
 	 	node_to_exp = bf_tree.deque_frontier() #node to expand
         
-	 	if node_to_exp.get_state().goal_test():
+	 	if node_to_exp.get_state().goal_test(): #goal achieved
 	 		goal_node = node_to_exp
 	 		break
 
+	 	# because there are duplicates in the frontier, 
+	 	# we need to check if node_to_exp is already in expanded_states to avoid expanding the same node twice:
 	 	if node_to_exp.get_state() in bf_tree.get_expanded_states():
 	 		continue 
 
@@ -77,7 +79,7 @@ def single_bfs(inputFile):
 	 	bf_expand(node_to_exp, bf_tree, maze) 
  	
 	try:
-		print_solution(maze, goal_node)
+		print_sin_solution(maze, goal_node)
 		print("The path cost is: ", goal_node.get_path_cost())
 	except NameError: #goal_node is not defined
 		print('Goal not reached')
