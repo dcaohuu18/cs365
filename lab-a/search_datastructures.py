@@ -17,9 +17,6 @@ class Node:
 	def __lt__(self, other):
 		return self.priority < other.get_priority()
 
-	def __str__(self): #for debugging only!
-		return str(self.priority) 
-
 	def get_state(self):
 		return self.state
 
@@ -53,9 +50,6 @@ class SearchTree:
 
 	def add_to_expanded_states(self, state):
 		self.expanded_states.add(state)
-
-	def print_frontier(self): #for debugging only!
-		print([str(n) for n in self.frontier])
         
 from collections import deque
 
@@ -88,17 +82,23 @@ class InformedSearchTree(SearchTree): #the frontier is a Min Heap
     
 #########################################################
 
+#the following helper functions only work for single-prize mazes:
+
+def single_heuristic(current_state, prize_loc):
+	current_loc = current_state.get_mouse_loc()
+	return abs(prize_loc[1] - current_loc[1]) + abs(prize_loc[0] - current_loc[0]) #manhattan distance  
+
 def get_visited_squares(goal_node):
 	visited_squares = [goal_node.get_state().get_mouse_loc()]
 	parent_node = goal_node.get_parent()
 
-	while parent_node is not None: #bug?
+	while parent_node is not None: 
 		visited_squares.append(parent_node.get_state().get_mouse_loc())
 		parent_node = parent_node.get_parent()
 		
 	return visited_squares
 
-def print_solution(maze, goal_node):
+def print_sin_solution(maze, goal_node):
 	visited_squares = get_visited_squares(goal_node)
 
 	for i in range(len(maze)):
@@ -127,9 +127,5 @@ if __name__ == '__main__':
 	df_tree.add_to_expanded_states(n1)
 	df_tree.add_to_frontier(n2)
 	df_tree.add_to_frontier(n3)
-	df_tree.print_frontier()
 
-	print(df_tree.pop_frontier())
-	df_tree.print_frontier()
-
-	#https://ai.stackexchange.com/questions/6426/what-is-the-difference-between-tree-search-and-graph-search
+	df_tree.pop_frontier()
