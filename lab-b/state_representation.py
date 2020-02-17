@@ -1,6 +1,6 @@
 '''
 Dong Cao, Kate Nguyen
-Lab B
+CS365 Lab B
 state_representation.py
 '''
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
 	rows_num = 5
 	cols_num = 5
 	display_state(rows_num, cols_num, black_set, white_set)
-	new_black_set, new_white_set = transition_function(black_set, white_set, ((3,0), (4,0)))
+	new_black_set, new_white_set = transition_function(black_set, white_set, ((3,0), (4,1)))
 	print()
 	display_state(rows_num, cols_num, new_black_set, new_white_set)
 	print(terminal_test(new_black_set, new_white_set, rows_num, cols_num, 1))
