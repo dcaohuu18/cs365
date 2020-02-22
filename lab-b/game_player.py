@@ -18,12 +18,16 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, root_turn, cutoff_dept
     tree_q.append(root)
     # cur_node = root
     
-    while cur_depth <= cutoff_depth: 
+    while True: 
         cur_node = tree_q.popleft()
         cur_black_pos = cur_node.black_pos
         cur_white_pos = cur_node.white_pos
-        cur_depth = cur_node.level
+        #cur_depth = cur_node.level # bug here: the first leaf will still get expanded
         
+        if cur_node.level == cutoff_depth:
+            tree_q.append(cur_node)
+            break
+
         child_turn = abs(cur_node.turn - 1)
         child_level = cur_node.level + 1
         
@@ -73,7 +77,7 @@ def make_minimax_move(black_pos, white_pos, turn, rows_num, cols_num, eval_func,
 
     best_next_node_board = max(root.list_children)
     
-    black_pos, white_pos = best_next_node_board.black_pos, best_next_node_board.white_pos   
+    return best_next_node_board.black_pos, best_next_node_board.white_pos   
 
 
 def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
@@ -88,7 +92,7 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
     while True:
         eval_func_used = heuristic_functions[turn] #whether it's white's or black's 
 
-        make_minimax_move(black_pos, white_pos, turn, rows_num, cols_num, eval_func_used, cutoff_depth)
+        black_pos, white_pos = make_minimax_move(black_pos, white_pos, turn, rows_num, cols_num, eval_func_used, cutoff_depth)
 
         display_state(rows_num, cols_num, black_pos, white_pos) 
 
