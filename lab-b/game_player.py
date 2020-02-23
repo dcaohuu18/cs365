@@ -31,18 +31,19 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, root_turn, cutoff_dept
         child_turn = abs(cur_node.turn - 1)
         child_level = cur_node.level + 1
         
-        legal_moves = move_gen(cur_black_pos, cur_white_pos, cur_node.turn, cols_num)
+        legal_moves = move_gen(cur_black_pos, cur_white_pos, cur_node.turn, rows_num, cols_num)
         for move in legal_moves:
             child_black_pos, child_white_pos = transition_function(cur_black_pos, cur_white_pos, move)
             child = Node(child_black_pos, child_white_pos, child_turn, cur_node, child_level)
 
-            if terminal_test(child_black_pos, child_white_pos, rows_num, cols_num, child_turn):
-                return deque([child])
+            #if terminal_test(child_black_pos, child_white_pos, rows_num, cols_num, child_turn): 
+            #bug here: the opponent may be the winner  
+                #return deque([child])
 
             tree_q.append(child)
             cur_node.list_children.append(child)    
 
-    print("Len of tree_q:", len(tree_q))
+    #print("Len of tree_q:", len(tree_q))
 
     return tree_q # set(tree_q) > bug!
 
@@ -51,7 +52,7 @@ def make_minimax_move(black_pos, white_pos, turn, rows_num, cols_num, eval_func,
     leaves = expand_tree(black_pos, white_pos, rows_num, cols_num, turn, cutoff_depth)
     #expand_tree() returns the leaves of the search tree
 
-    print("len of leaves:", len(leaves)) 
+    #print("len of leaves:", len(leaves)) 
     
     parents_set = set()
 
@@ -94,7 +95,7 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
         black_pos, white_pos = make_minimax_move(black_pos, white_pos, turn, rows_num, cols_num, eval_func_used, cutoff_depth)
 
-        display_state(rows_num, cols_num, black_pos, white_pos) 
+        display_state(rows_num, cols_num, black_pos, white_pos)
 
         if terminal_test(black_pos, white_pos, rows_num, cols_num, turn):
             break
@@ -103,4 +104,4 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
 
 if __name__ == '__main__':
-    play_game([evasive, evasive], 5, 5, 1)
+    play_game([evasive, conqueror], 5, 5, 1)
