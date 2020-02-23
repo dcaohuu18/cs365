@@ -4,7 +4,8 @@ CS365 Lab B
 state_representation.py
 '''
 
-from state_representation import Node, initial_state, move_gen, display_state, transition_function, terminal_test 
+
+from state_representation import Node, initial_state, move_gen, display_state, transition_function, terminal_test
 from heuristic_functions import evasive, conqueror 
 from collections import deque
 import copy
@@ -15,16 +16,19 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_t
     root = Node(black_pos, white_pos, root_turn)
     tree_stack = list()
 
-    legal_moves = move_gen(black_pos, white_pos, abs(root_turn-1), rows_num, cols_num)
+    legal_moves = move_gen(black_pos, white_pos, root_turn, rows_num, cols_num)
     
+    '''
+    # randomly pick some moves: 
     try:
         legal_moves = random.sample(legal_moves, (cols_num*rows_of_pieces)//2)
     except ValueError: #there are only a few pieces left
         pass
+    '''
 
     for move in legal_moves:
         child_black_pos, child_white_pos = transition_function(black_pos, white_pos, move)
-        child = Node(child_black_pos, child_white_pos, abs(root_turn-1), root, 1)
+        child = Node(child_black_pos, child_white_pos, root_turn, root, 1)
 
         tree_stack.append(child)
         root.list_children.append(child)
@@ -91,7 +95,7 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
         display_state(rows_num, cols_num, black_pos, white_pos)
 
-        if terminal_test(black_pos, white_pos, rows_num, cols_num, turn) == True:
+        if terminal_test(black_pos, white_pos, rows_num, cols_num, turn):
             break
 
         turn = abs(turn - 1) #switch turn (0 -> 1; 1 -> 0)  
