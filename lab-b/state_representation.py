@@ -46,36 +46,38 @@ def initial_state(rows_num, cols_num, rows_of_pieces): ### number of rows of pie
     return black_pos, white_pos
 
 
-def move_gen(black_pos, white_pos, turn, cols_num):
+def move_gen(black_pos, white_pos, turn, rows_num, cols_num):
     moves = set()
     
     if turn == 0: ###white
         for pos in white_pos:
             cur_row = pos[0]
             cur_col = pos[1]
-            
-            if ((cur_row - 1, cur_col) not in white_pos) and ((cur_row - 1, cur_col) not in black_pos):
-                moves.add((pos, (cur_row - 1, cur_col))) #move up
-            
-            if ((cur_row - 1, cur_col - 1) not in white_pos) and (cur_col - 1 >= 0): 
-                moves.add((pos, (cur_row - 1, cur_col - 1))) #move up right (from white's perspective)
-            
-            if ((cur_row - 1, cur_col + 1) not in white_pos) and (cur_col + 1 <= cols_num):  
-                moves.add((pos, (cur_row - 1, cur_col + 1))) #move up left (from white's perspective)
+
+            if cur_row - 1 >= 0:
+                if ((cur_row - 1, cur_col) not in white_pos) and ((cur_row - 1, cur_col) not in black_pos):
+                    moves.add((pos, (cur_row - 1, cur_col))) #move up
+                
+                if ((cur_row - 1, cur_col - 1) not in white_pos) and (cur_col - 1 >= 0): 
+                    moves.add((pos, (cur_row - 1, cur_col - 1))) #move up right (from white's perspective)
+                
+                if ((cur_row - 1, cur_col + 1) not in white_pos) and (cur_col + 1 <= cols_num - 1):  
+                    moves.add((pos, (cur_row - 1, cur_col + 1))) #move up left (from white's perspective)
     
     else:       ###black
         for pos in black_pos:
             cur_row = pos[0]
             cur_col = pos[1]
             
-            if ((cur_row + 1, cur_col) not in black_pos) and ((cur_row + 1, cur_col) not in white_pos):
-                moves.add((pos, (cur_row + 1, cur_col))) #move up
-            
-            if ((cur_row + 1, cur_col - 1) not in black_pos) and (cur_col - 1 >= 0):
-                moves.add((pos, (cur_row + 1, cur_col - 1)))
-            
-            if ((cur_row + 1, cur_col + 1) not in black_pos) and (cur_col + 1 <= cols_num):
-                moves.add((pos, (cur_row + 1, cur_col + 1)))
+            if cur_row + 1 <= rows_num - 1:
+                if ((cur_row + 1, cur_col) not in black_pos) and ((cur_row + 1, cur_col) not in white_pos):
+                    moves.add((pos, (cur_row + 1, cur_col))) #move up
+                
+                if ((cur_row + 1, cur_col - 1) not in black_pos) and (cur_col - 1 >= 0):
+                    moves.add((pos, (cur_row + 1, cur_col - 1)))
+                
+                if ((cur_row + 1, cur_col + 1) not in black_pos) and (cur_col + 1 <= cols_num - 1):
+                    moves.add((pos, (cur_row + 1, cur_col + 1)))
 
     return moves
 
