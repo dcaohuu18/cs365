@@ -14,35 +14,8 @@ import random
 
 def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, real_turn, cutoff_depth, eval_func): 
     root = Node(black_pos, white_pos, abs(real_turn-1))
-    tree_stack = list()
+    tree_stack = [root]
 
-    legal_moves = move_gen(black_pos, white_pos, real_turn, rows_num, cols_num)
-    
-    '''
-    # randomly pick some moves: 
-    try:
-        legal_moves = random.sample(legal_moves, (cols_num*rows_of_pieces)//2)
-    except ValueError: #there are only a few pieces left
-        pass
-    '''
-
-    for move in legal_moves:
-        child_black_pos, child_white_pos = transition_function(black_pos, white_pos, move)
-        child = Node(child_black_pos, child_white_pos, real_turn, root, 1)
-
-        root.list_children.append(child)
-
-        if terminal_test(child_black_pos, child_white_pos, rows_num, cols_num, real_turn):
-            child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
-            continue # stop expanding this branch further
-
-        if len(child_black_pos) == 0 or len(child_white_pos) == 0:
-            child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
-            continue
-
-        tree_stack.append(child)
-        
-    
     while tree_stack != []: #cut off time
         cur_node = tree_stack.pop()
 
@@ -57,6 +30,16 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, real_t
         child_level = cur_node.level + 1
         
         legal_moves = move_gen(cur_black_pos, cur_white_pos, child_turn, rows_num, cols_num)
+
+        '''
+        if cur_node.level <= 0:
+        # randomly pick some moves: 
+            try:
+                legal_moves = random.sample(legal_moves, (cols_num*rows_of_pieces)//2)
+            except ValueError: #there are only a few pieces left
+                pass
+        '''
+        
         for move in legal_moves:
             child_black_pos, child_white_pos = transition_function(cur_black_pos, cur_white_pos, move)
             child = Node(child_black_pos, child_white_pos, child_turn, cur_node, child_level)
@@ -69,7 +52,7 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, real_t
 
             if len(child_black_pos) == 0 or len(child_white_pos) == 0:
                 child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
-                continue
+                continue # stop expanding this branch further
 
             tree_stack.append(child)
 
