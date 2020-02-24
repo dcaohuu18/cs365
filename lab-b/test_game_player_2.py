@@ -12,11 +12,11 @@ import copy
 import random
 
 
-def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_turn, cutoff_depth, eval_func): 
-    root = Node(black_pos, white_pos, root_turn)
+def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, real_turn, cutoff_depth, eval_func): 
+    root = Node(black_pos, white_pos, abs(real_turn-1))
     tree_stack = list()
 
-    legal_moves = move_gen(black_pos, white_pos, root_turn, rows_num, cols_num)
+    legal_moves = move_gen(black_pos, white_pos, real_turn, rows_num, cols_num)
     
     '''
     # randomly pick some moves: 
@@ -28,10 +28,20 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_t
 
     for move in legal_moves:
         child_black_pos, child_white_pos = transition_function(black_pos, white_pos, move)
-        child = Node(child_black_pos, child_white_pos, root_turn, root, 1)
+        child = Node(child_black_pos, child_white_pos, real_turn, root, 1)
+
+        root.list_children.append(child)
+
+        if terminal_test(child_black_pos, child_white_pos, rows_num, cols_num, real_turn):
+            child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
+            continue # stop expanding this branch further
+
+        if len(child_black_pos) == 0 or len(child_white_pos) == 0:
+            child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
+            continue
 
         tree_stack.append(child)
-        root.list_children.append(child)
+        
     
     while tree_stack != []: #cut off time
         cur_node = tree_stack.pop()
@@ -40,13 +50,13 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_t
         cur_white_pos = cur_node.white_pos
 
         if cur_node.level == cutoff_depth: # current node is a leaf
-            cur_node.util_est = eval_func(cur_black_pos, cur_white_pos, root_turn) 
+            cur_node.util_est = eval_func(cur_black_pos, cur_white_pos, real_turn) 
             continue
 
         child_turn = abs(cur_node.turn - 1)
         child_level = cur_node.level + 1
         
-        legal_moves = move_gen(cur_black_pos, cur_white_pos, cur_node.turn, rows_num, cols_num)
+        legal_moves = move_gen(cur_black_pos, cur_white_pos, child_turn, rows_num, cols_num)
         for move in legal_moves:
             child_black_pos, child_white_pos = transition_function(cur_black_pos, cur_white_pos, move)
             child = Node(child_black_pos, child_white_pos, child_turn, cur_node, child_level)
@@ -54,8 +64,12 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_t
             cur_node.list_children.append(child)
 
             if terminal_test(child_black_pos, child_white_pos, rows_num, cols_num, child_turn):
-                child.util_est = eval_func(child_black_pos, child_white_pos, root_turn)  
+                child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
                 continue # stop expanding this branch further
+
+            if len(child_black_pos) == 0 or len(child_white_pos) == 0:
+                child.util_est = eval_func(child_black_pos, child_white_pos, real_turn)  
+                continue
 
             tree_stack.append(child)
 
@@ -63,8 +77,8 @@ def expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, root_t
 
 
 def minimax(root, maxmin_turn):
-    if root.list_children != []: #if leaves not reached
-        if maxmin_turn%2 == 0:
+    if root.list_children != []: # if leaves not reached
+        if maxmin_turn%2 == 0: # max's turn
             root.util_est = max([minimax(child, abs(maxmin_turn - 1)) for child in root.list_children])
         else:
             root.util_est = min([minimax(child, abs(maxmin_turn - 1)) for child in root.list_children])
@@ -112,5 +126,6 @@ if __name__ == '__main__':
     
     print(minimax(root, 0))
     '''
-    
-    play_game([evasive, conqueror], 8, 8, 2)
+    play_game([conqueror, conqueror], 5, 5, 2) 
+
+    # bug when there's only 1 piece left and it's the turn of the player with less pieces (1) 
