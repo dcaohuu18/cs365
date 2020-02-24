@@ -103,9 +103,11 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
         for child in root.list_children:
             minimax(child, 1) # calculate the util_est for all the root's children
 
-        best_next_board_node = max(root.list_children)
-
-        black_pos, white_pos = best_next_board_node.black_pos, best_next_board_node.white_pos
+        try:
+            best_next_board_node = max(root.list_children)
+            black_pos, white_pos = best_next_board_node.black_pos, best_next_board_node.white_pos
+        except ValueError: #one player is left with no piece to play
+            pass
 
         display_state(rows_num, cols_num, black_pos, white_pos)
 
@@ -128,4 +130,4 @@ if __name__ == '__main__':
     '''
     play_game([conqueror, conqueror], 5, 5, 2) 
 
-    # bug when there's only 1 piece left and it's the turn of the player with less pieces (1) 
+    # bug when there's only 1 piece left and it's the turn of the player with less pieces (1) >> fixed!
