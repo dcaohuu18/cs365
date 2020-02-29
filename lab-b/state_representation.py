@@ -6,14 +6,14 @@ state_representation.py
 
 
 import copy
+from collections import deque
 
 
 class Node:
-    def __init__(self, black_pos, white_pos, turn, parent = None, level = 0):
+    def __init__(self, black_pos, white_pos, turn, level = 0):
         self.black_pos = black_pos
         self.white_pos = white_pos
-        self.list_children = []
-        self.parent = parent 
+        self.list_children = [] 
         self.turn = turn
         self.level = level
         self.util_est = None
@@ -21,11 +21,13 @@ class Node:
     def __lt__(self, other):
         return self.util_est < other.util_est
 
+    '''
     def __hash__(self):
         return hash(frozenset(self.black_pos.union(self.white_pos)))
 
     def __eq__(self, other):
         return self.black_pos == other.black_pos and self.white_pos == other.white_pos
+    '''
 
 
 ############################################################################
@@ -47,37 +49,37 @@ def initial_state(rows_num, cols_num, rows_of_pieces): ### number of rows of pie
 
 
 def move_gen(black_pos, white_pos, turn, rows_num, cols_num):
-    moves = set()
+    moves = deque()
     
     if turn == 0: ###white
         for pos in white_pos:
             cur_row = pos[0]
             cur_col = pos[1]
 
-            if cur_row - 1 >= 0:
-                if ((cur_row - 1, cur_col) not in white_pos) and ((cur_row - 1, cur_col) not in black_pos):
-                    moves.add((pos, (cur_row - 1, cur_col))) #move up
+            if ((cur_row - 1, cur_col - 1) not in white_pos) and (cur_col - 1 >= 0): 
+                moves.appendleft((pos, (cur_row - 1, cur_col - 1))) #move up right (from white's perspective)
+                # (possible) captures will get expanded first
+                # this move ordering may help with alpha-beta pruning 
                 
-                if ((cur_row - 1, cur_col - 1) not in white_pos) and (cur_col - 1 >= 0): 
-                    moves.add((pos, (cur_row - 1, cur_col - 1))) #move up right (from white's perspective)
-                
-                if ((cur_row - 1, cur_col + 1) not in white_pos) and (cur_col + 1 <= cols_num - 1):  
-                    moves.add((pos, (cur_row - 1, cur_col + 1))) #move up left (from white's perspective)
+            if ((cur_row - 1, cur_col + 1) not in white_pos) and (cur_col + 1 <= cols_num - 1):  
+                moves.appendleft((pos, (cur_row - 1, cur_col + 1))) #move up left (from white's perspective)
+
+            if ((cur_row - 1, cur_col) not in white_pos) and ((cur_row - 1, cur_col) not in black_pos):
+                moves.append((pos, (cur_row - 1, cur_col))) #move up
     
     else:       ###black
         for pos in black_pos:
             cur_row = pos[0]
             cur_col = pos[1]
-            
-            if cur_row + 1 <= rows_num - 1:
-                if ((cur_row + 1, cur_col) not in black_pos) and ((cur_row + 1, cur_col) not in white_pos):
-                    moves.add((pos, (cur_row + 1, cur_col))) #move up
+
+            if ((cur_row + 1, cur_col - 1) not in black_pos) and (cur_col - 1 >= 0):
+                moves.appendleft((pos, (cur_row + 1, cur_col - 1)))
                 
-                if ((cur_row + 1, cur_col - 1) not in black_pos) and (cur_col - 1 >= 0):
-                    moves.add((pos, (cur_row + 1, cur_col - 1)))
-                
-                if ((cur_row + 1, cur_col + 1) not in black_pos) and (cur_col + 1 <= cols_num - 1):
-                    moves.add((pos, (cur_row + 1, cur_col + 1)))
+            if ((cur_row + 1, cur_col + 1) not in black_pos) and (cur_col + 1 <= cols_num - 1):
+                moves.appendleft((pos, (cur_row + 1, cur_col + 1)))
+
+            if ((cur_row + 1, cur_col) not in black_pos) and ((cur_row + 1, cur_col) not in white_pos):
+                moves.append((pos, (cur_row + 1, cur_col))) #move up
 
     return moves
 
@@ -113,7 +115,20 @@ def transition_function(black_pos, white_pos, move):
     return new_black_pos, new_white_pos
 
 
+def short_terminal_test(black_pos, white_pos, rows_num, turn, move): # only check if the given move leads to the terminal_state
+    if len(black_pos) == 0 or len(white_pos) == 0:
+        return True 
+
+    if turn == 0: #white's turn
+        return move[1][0] == 0
+    
+    return move[1][0] == (rows_num - 1) 
+
+
 def terminal_test(black_pos, white_pos, rows_num, cols_num, turn):
+    if len(black_pos) == 0 or len(white_pos) == 0:
+        return True
+
     if turn == 0: #white's turn
         if len(white_pos) < cols_num:
             for item in white_pos:
@@ -140,15 +155,14 @@ def terminal_test(black_pos, white_pos, rows_num, cols_num, turn):
                     return True
             return False 
 
-# abs(turn - 1)
 
 if __name__ == '__main__':
-    rows_num = 5
-    cols_num = 5
+    rows_num = 4
+    cols_num = 4
     rows_of_pieces = 2
 
     black_pos, white_pos = initial_state(rows_num, cols_num, rows_of_pieces)
-    display_state(rows_num, cols_num, black_set, white_pos)
+    display_state(rows_num, cols_num, black_pos, white_pos)
     
     new_black_pos, new_white_pos = transition_function(black_pos, white_pos, ((1,0), (2,0)))
     display_state(rows_num, cols_num, new_black_pos, new_white_pos)
