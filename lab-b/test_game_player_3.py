@@ -120,7 +120,7 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
 
 if __name__ == '__main__':
-    '''
+    
     rows_num = 4
     cols_num = 4
     rows_of_pieces = 2
@@ -128,6 +128,6 @@ if __name__ == '__main__':
     black_pos, white_pos = initial_state(rows_num, cols_num, rows_of_pieces)
     root = expand_tree(black_pos, white_pos, rows_num, cols_num, rows_of_pieces, 0, 3, evasive)
     
-    print(minimax(root, 0))
-    '''
-    play_game([guardian, conqueror], 8, 8, 2)
+    print(alpha_beta_search(root, 0))
+    
+    #play_game([guardian, conqueror], 8, 8, 2)
