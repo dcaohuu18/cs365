@@ -6,10 +6,8 @@ alpha_beta_player.py
 
 
 from state_representation import initial_state, move_gen, display_state, transition_function, terminal_test, short_terminal_test
-from heuristic_functions import evasive, conqueror, pioneer, guardian, offensive_defensive  
-from collections import deque
+from heuristic_functions import evasive, conqueror, pioneer, guardian, offensive_defensive
 import copy
-import random
 
 
 class ABNode:
@@ -63,17 +61,17 @@ def alpha_beta_search(parent, rows_num, cols_num, real_turn, cutoff_depth, eval_
 
         if maxmin_turn == 0: # MAX's turn
             parent.util_est = max(parent.util_est, child.util_est)
-            parent.beta = max(parent.beta, parent.util_est)
+            parent.beta = max(parent.beta, child.util_est)
             
             try:
                 if parent.beta >= parent.parent.alpha: 
                     return parent.util_est
             except AttributeError: # root reached!
-                pass 
+                pass
 
         else:
             parent.util_est = min(parent.util_est, child.util_est)
-            parent.alpha = min(parent.beta, parent.util_est)
+            parent.alpha = min(parent.alpha, child.util_est)
             if parent.alpha <= parent.parent.beta:
                 return parent.util_est
 
@@ -83,7 +81,7 @@ def alpha_beta_search(parent, rows_num, cols_num, real_turn, cutoff_depth, eval_
 def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
     turn = 0 #white goes first 
 
-    cutoff_depth = 6  #should be changed based on the sizes of the board
+    cutoff_depth = 4  #should be changed based on the sizes of the board
 
     black_pos, white_pos = initial_state(rows_num, cols_num, rows_of_pieces) 
 
@@ -120,4 +118,4 @@ if __name__ == '__main__':
 
     print(alpha_beta_search(root, rows_num, cols_num, 0, 5, conqueror))
     '''
-    play_game([guardian, conqueror], 8, 8, 2)
+    play_game([guardian, evasive], 8, 8, 2)
