@@ -25,5 +25,4 @@ From the command line, run ```python3 main.py``` and follow the instructions.
     * ```rows_num```: the board's number of rows
     * ```cols_num```: the board's number of columns
     * ```rows_of_pieces```: the board's number of rows of pieces    
-  ```play_game()``` firsts creates an initial board state by calling ```initial_state()```. It then uses minimax search to determine which move to take for each player, displays the new board state resulted from the move, and keeps repeating the process until a terminal state is reached. 
-  An example call is ```play_game([evasive, guardian], 8, 8, 2)```.
+ ```play_game()``` firsts creates an initial board state by calling ```initial_state()```. It then uses minimax search to determine which move to take for each player, displays the new board state resulted from the move, and keeps repeating the process until a terminal state is reached. An example call is ```play_game([evasive, guardian], 8, 8, 2)```.
