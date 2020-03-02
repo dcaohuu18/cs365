@@ -6,7 +6,7 @@ alpha_beta_player.py
 
 
 from state_representation import initial_state, move_gen, display_state, transition_function, terminal_test, short_terminal_test
-from heuristic_functions import evasive, conqueror, pioneer, guardian, offensive_defensive
+from heuristic_functions import evasive, conqueror, pioneer, guardian, comprehensive
 import copy
 
 
@@ -83,9 +83,14 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
     cutoff_depth = 4  #should be changed based on the sizes of the board
 
-    black_pos, white_pos = initial_state(rows_num, cols_num, rows_of_pieces) 
+    init_black_pos, init_white_pos = initial_state(rows_num, cols_num, rows_of_pieces)
+    
+    black_pos = copy.deepcopy(init_black_pos)
+    white_pos = copy.deepcopy(init_white_pos) 
 
     display_state(rows_num, cols_num, black_pos, white_pos) #initial state 
+
+    moves_taken = 0
 
     while True:
         eval_func_used = heuristic_functions[turn] #whether it's white's or black's
@@ -101,10 +106,16 @@ def play_game(heuristic_functions, rows_num, cols_num, rows_of_pieces):
 
         display_state(rows_num, cols_num, black_pos, white_pos)
 
+        moves_taken += 1
+
         if terminal_test(black_pos, white_pos, rows_num, cols_num, turn):
             break
 
-        turn = abs(turn - 1) #switch turn (0 -> 1; 1 -> 0)  
+        turn = abs(turn - 1) #switch turn (0 -> 1; 1 -> 0)
+
+    print('Number of moves taken: ', moves_taken)
+    print('Pieces captured by white: ', len(init_black_pos) - len(black_pos))
+    print('Pieces captured by black: ', len(init_white_pos) - len(white_pos))  
 
 
 if __name__ == '__main__':
@@ -118,4 +129,4 @@ if __name__ == '__main__':
 
     print(alpha_beta_search(root, rows_num, cols_num, 0, 5, conqueror))
     '''
-    play_game([guardian, evasive], 8, 8, 2)
+    play_game([evasive, pioneer], 8, 8, 2)
