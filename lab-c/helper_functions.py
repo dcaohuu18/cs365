@@ -21,17 +21,17 @@ class Node:
 import math
 
 
-def read_file(file_name):    
+def read_file(file_name, delimiter = '\t'):    
     yes_exs = []
     no_exs = []
 
     with open(file_name, 'r') as inputFile:
         lines_list = inputFile.readlines()
-        attributes_list = lines_list[0].split('\t')[:-1] # we don't need the last column (the classification attribute)
+        attributes_list = lines_list[0].split(delimiter)[:-1] # we don't need the last column (the classification attribute)
         attributes_dict = {attribute: set() for attribute in attributes_list}
         
         for line in lines_list[1:]:
-            values = line.split('\t')
+            values = line.split(delimiter)
             classification = values[-1].strip()
             del values[-1] # we no longer need the last column
 
@@ -102,15 +102,6 @@ def print_tree(root, level = 0):
     else:
         print(identation + "|{att} = {val}: {class_}".format(att=root.attribute, val=root.att_value, class_=root.classification))
 
-'''
-outlook = sunny
-|  humidity = high: no
-|  humidity = normal: yes
-outlook = overcast: yes
-outlook = rainy
-|  windy = TRUE: no
-|  windy = FALSE: yes
-'''
 
 if __name__ == '__main__':
 	read_file('titanic2.txt')
