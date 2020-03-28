@@ -56,6 +56,60 @@ def build_decision_tree(root, yes_exs, no_exs, attributes, pa_yes_exs, pa_no_exs
         return
 
 
+#########################################################
+# Accuracy Testing:
+
+
+def classify_example(example, des_tree_root):
+    if des_tree_root.classification != None:
+        return des_tree_root.classification
+    
+    for child in des_tree_root.children_list:
+        if example[child.attribute] == child.att_value:
+            return classify_example(example, child)
+
+
+def training_set_accuracy(yes_exs, no_exs, des_tree_root):
+    correct = 0 
+    
+    for ex in yes_exs:
+        if classify_example(ex, des_tree_root) == 'yes':
+            correct += 1
+
+    for ex in no_exs:
+        if classify_example(ex, des_tree_root) == 'no':
+            correct += 1    
+    
+    return correct/(len(yes_exs)+len(no_exs))
+
+
+def test_set_accuracy(yes_exs, no_exs, attributes): # leave-one-out cross-validation
+    correct = 0
+
+    for i in range(len(yes_exs)):
+        curtailed_yes_exs = copy.deepcopy(yes_exs[:i]) + copy.deepcopy(yes_exs[i+1:]) # this takes a lot of time!
+        
+        root = Node(curtailed_yes_exs, no_exs)
+        build_decision_tree(root, curtailed_yes_exs, no_exs, attributes, curtailed_yes_exs, no_exs)
+        
+        if classify_example(yes_exs[i], root) == 'yes':
+            correct += 1
+
+    for i in range(len(no_exs)):
+        curtailed_no_exs = copy.deepcopy(no_exs[:i]) + copy.deepcopy(no_exs[i+1:])
+        
+        root = Node(yes_exs, curtailed_no_exs)
+        build_decision_tree(root, yes_exs, curtailed_no_exs, attributes, yes_exs, curtailed_no_exs)
+        
+        if classify_example(no_exs[i], root) == 'no':
+            correct += 1
+    
+    return correct/(len(yes_exs)+len(no_exs))
+
+
+#########################################################
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("file_name", help ="Enter input file name", type = str)
@@ -68,6 +122,16 @@ def main():
     
     print_tree(root)
 
+    print("training_set_accuracy is {:.2%}".format(training_set_accuracy(yes_exs, no_exs, root)))
+
+    run_cross_val = input("Do you want to run leave-one-out cross-validation (y/n)? ")
+
+    if run_cross_val == 'y':
+        print("test_set_accuracy is {:.2%}".format(test_set_accuracy(yes_exs, no_exs, attributes)))
+
+    elif run_cross_val != 'n':
+        print("Invalid input! Please enter either 'y' or 'n'.")
+
 
 if __name__ == '__main__':
-	main()
+    main()
