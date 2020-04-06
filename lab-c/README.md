@@ -6,6 +6,7 @@ From the command line, run ```python3 decision_tree.py <datafile.txt>```. The th
   * ```read_file()```
   * ```importance()```
   * ```print_tree()```
+  * ```count_nodes()```
 * ```decision_tree.py``` includes the algorithm of building the decision tree and methods of accuracy testing:
   * ```build_decision_tree()```
   * ```training_set_accuracy()```
