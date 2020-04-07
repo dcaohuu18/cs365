@@ -19,6 +19,7 @@ class Node:
 
 
 import math
+import copy
 
 
 def read_file(file_name, delimiter = '\t'):    
@@ -105,7 +106,7 @@ def print_tree(root, level = 0):
 
 def count_nodes(root): # return the number of nodes of the tree
     nodes_num = 1 # the root
-    children_list = root.children_list
+    children_list = copy.deepcopy(root.children_list)
 
     while children_list != []:
         child = children_list.pop()
