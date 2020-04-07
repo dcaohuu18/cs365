@@ -103,5 +103,17 @@ def print_tree(root, level = 0):
         print(identation + "|{att} = {val}: {class_}".format(att=root.attribute, val=root.att_value, class_=root.classification))
 
 
+def count_nodes(root): # return the number of nodes of the tree
+    nodes_num = 1 # the root
+    children_list = root.children_list
+
+    while children_list != []:
+        child = children_list.pop()
+        children_list += child.children_list
+        nodes_num += 1
+
+    return nodes_num
+
+
 if __name__ == '__main__':
 	read_file('titanic2.txt')
