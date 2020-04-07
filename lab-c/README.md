@@ -4,7 +4,7 @@ From the command line, run ```python3 decision_tree.py <datafile.txt>```. The th
 ### What each file does:
 * ```helper_functions.py``` includes the class ```Node``` and functions that support the decision tree building:
   * ```read_file()``` returns two lists of examples (yes and no) and a dictionary of attributes and their possible values, given the file name of the dataset.
-  * ```importance()``` splits the examples on the given attribute and returns the information gain and the children nodes resulting from this split. 
+  * ```importance()``` splits the examples on the given attribute and returns the information gain as well as the children nodes resulting from this split. 
   * ```print_tree()``` takes the tree's root as input and recursively prints out the tree. 
   * ```count_nodes()``` takes the tree's root as input and returns the tree's number of nodes.
 * ```decision_tree.py``` includes the algorithm of building the decision tree and methods of accuracy testing:
