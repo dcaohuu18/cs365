@@ -5,7 +5,7 @@ decision_tree.py
 '''
 
 
-from helper_functions import Node, read_file, importance, print_tree
+from helper_functions import Node, read_file, importance, print_tree, count_nodes
 import argparse
 import copy
 
@@ -122,12 +122,14 @@ def main():
     
     print_tree(root)
 
-    print("training_set_accuracy is {:.2%}".format(training_set_accuracy(yes_exs, no_exs, root)))
+    print("number of nodes is: {}".format(count_nodes(root)))
+
+    print("training_set_accuracy is: {:.2%}".format(training_set_accuracy(yes_exs, no_exs, root)))
 
     run_cross_val = input("Do you want to run leave-one-out cross-validation (y/n)? ")
 
     if run_cross_val == 'y':
-        print("test_set_accuracy is {:.2%}".format(test_set_accuracy(yes_exs, no_exs, attributes)))
+        print("test_set_accuracy is: {:.2%}".format(test_set_accuracy(yes_exs, no_exs, attributes)))
 
     elif run_cross_val != 'n':
         print("Invalid input! Please enter either 'y' or 'n'.")
