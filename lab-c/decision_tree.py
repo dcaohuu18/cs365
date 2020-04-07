@@ -20,11 +20,11 @@ def build_decision_tree(root, yes_exs, no_exs, attributes, pa_yes_exs, pa_no_exs
 
     elif yes_exs == []:
         root.classification = 'no'
-        return 
+        return # stop expanding further
 
     elif no_exs == []:
         root.classification = 'yes'
-        return 
+        return # stop expanding further
 
     elif attributes == {}:
         if len(yes_exs) > len(no_exs):
@@ -78,7 +78,7 @@ def training_set_accuracy(yes_exs, no_exs, des_tree_root):
 
     for ex in no_exs:
         if classify_example(ex, des_tree_root) == 'no':
-            correct += 1    
+            correct += 1
     
     return correct/(len(yes_exs)+len(no_exs))
 
