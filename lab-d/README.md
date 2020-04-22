@@ -1,5 +1,5 @@
 ### How to run:
-From the command line, run ```python3 neural_network.py --help``` to see which arguments are required and how to specify them. 
+From the command line, run ```python3 neural_network.py --help``` to see what arguments are required and how to specify them. 
 An example call is ```python3 neural_network.py -hn 2 -on 1 -lr 0.3 -ep 10000 xor.txt```. 
 
 ### What each file does:
