@@ -49,6 +49,21 @@ def read_file_to_arrays(file_name, delimiter = '\t'):
     return feature_array, label_array, header_array
 
 
+def print_result_table(input_file_name, output_layer_outputs):
+    if output_layer_outputs.shape[0] > 1:
+        output_list = output_layer_outputs.T.tolist() # only transpose when there's more than 1 output node
+    else:
+        output_list = output_layer_outputs[0]
+
+    with open(input_file_name, 'r') as inputFile:
+        lines_list = inputFile.readlines()
+
+        print(lines_list[0].strip(), 'network_output', sep='\t') # print the headers
+
+        for i in range(1, len(lines_list)):
+            print(lines_list[i].strip(), output_list[i-1], sep='\t')
+
+
 if __name__ == '__main__':
     print(sigmoid(10))
     print(init_weights_biases(2,2,1))
