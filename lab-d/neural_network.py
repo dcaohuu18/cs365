@@ -5,7 +5,7 @@ neural_network.py
 '''
 
 
-from helper_functions import sigmoid, init_weights_biases, read_file_to_arrays
+from helper_functions import sigmoid, init_weights_biases, read_file_to_arrays, print_result_table
 import numpy as np
 import argparse
 
@@ -27,7 +27,7 @@ def forward_propagate(feature_array, weights_biases_dict):
 
 # Use binary cross-entropy to calculate the loss
 def find_loss(output_layer_outputs, labels):
-    num_examples = labels.shape[1] # The number of examples is the number of columns in label_array
+    num_examples = labels.shape[1] # The number of examples is the number of columns in labels
 
     loss = (-1 / num_examples) * np.sum(np.multiply(labels, np.log(output_layer_outputs)) +
                                         np.multiply(1-labels, np.log(1-output_layer_outputs)))
@@ -134,7 +134,7 @@ def update_weights_biases(weights_biases_dict, gradients, learning_rate):
 
 
 def train_network(feature_array, label_array, num_hidden_nodes, num_output_nodes, epochs, learning_rate):
-    num_input_nodes = np.size(feature_array, 0) # get the num of rows 
+    num_input_nodes = np.size(feature_array, 0) # get the num of rows/features
     weights_biases_dict = init_weights_biases(num_input_nodes, num_hidden_nodes, num_output_nodes)
 
     for i in range(epochs):
@@ -156,7 +156,7 @@ def main():
     parser.add_argument("input_file_name", help="Input file name", type=str)
     parser.add_argument("-hn", "--num_hidden_nodes", metavar='', help='Number of hidden nodes', type=int, required=True)
     parser.add_argument("-on", "--num_output_nodes", metavar='', help='Number of output nodes', type=int, required=True)
-    parser.add_argument("-lr", "--learning_rate", metavar='', help='Learning rate (between 0 & 1)', type =float, required=True)
+    parser.add_argument("-lr", "--learning_rate", metavar='', help='Learning rate', type =float, required=True)
     parser.add_argument("-ep", "--epochs", metavar='', help='Number of epochs', type=int, required=True)
     args = parser.parse_args()
 
@@ -165,6 +165,11 @@ def main():
     weights_biases_dict = train_network(feature_array, label_array, 
                                         args.num_hidden_nodes, args.num_output_nodes, 
                                         args.epochs, args.learning_rate)
+
+    output_vals = forward_propagate(feature_array, weights_biases_dict)
+    output_layer_outputs = output_vals['output_layer_outputs']
+
+    print_result_table(args.input_file_name, output_layer_outputs)
 
 
 if __name__ == '__main__':
