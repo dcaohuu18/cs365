@@ -170,6 +170,7 @@ def main():
     output_layer_outputs = output_vals['output_layer_outputs']
 
     print_result_table(args.input_file_name, output_layer_outputs)
+    print('\n', weights_biases_dict, sep = '')
 
 
 if __name__ == '__main__':
