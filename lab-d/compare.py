@@ -1,7 +1,7 @@
 '''
 Dong Cao
 CS365 Lab D
-compare_exp.py
+compare.py
 '''
 
 
