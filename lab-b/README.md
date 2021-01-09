@@ -9,7 +9,7 @@ From the command line, run ```python3 main.py``` and follow the instructions.
     * ```transition_function(black_pos, white_pos, move)``` returns the new state resulted from the given move
     * ```terminal_test(black_pos, white_pos, rows_num, cols_num, turn)``` checks if a board state is a terminal state
     * ```short_terminal_test(black_pos, white_pos, rows_num, turn, move)``` only checks if the given move leads to a terminal state 
-* ```basic_minimax_player.py``` implements minimax search and haves two agents play against each other, each using the specified heuristic functions (see ```play_game()``` below). For a (8x8, 2) board, it can think 3 steps ahead. In other words, the search tree is three-layer deep (not including the root).   
+* ```basic_minimax_player.py``` implements minimax search and has two agents play against each other, each using the specified heuristic functions (see ```play_game()``` below). For a (8x8, 2) board, it can think 3 steps ahead. In other words, the search tree is three-layer deep (not including the root).   
 * ```alpha_beta_player.py``` applies alpha-beta pruning and can think 4 steps ahead.
 * ```heuristic_functions.py``` includes heuristic functions or utility functions that evaluate how favorable a board state is to a player. It has the following functions:
     * ```evasive(black_pos, white_pos, turn, rows_num)```
